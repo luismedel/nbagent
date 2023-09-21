@@ -55,7 +55,7 @@ def write_json(path: str, data: t.Dict[str, t.Any]) -> None:
 def write_config() -> None:
     conf_path: str = os.path.join(DATA_HOME, CONFIG_FILE)
     write_json(conf_path, CONFIG)
-    msg_err(f"Config saved to  {conf_path}")
+    msg_info(f"Config saved to {conf_path}")
 
 
 
