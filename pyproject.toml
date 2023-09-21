@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nbagent"
+version = "1.0.0"
+authors = [
+  { name="Luis Medel", email="luis@luismedel.com" },
+]
+description = "A Nullboard backup agent for Unix systems"
+readme = "README.md"
+requires-python = ">=3.6"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Unix",
+    "Topic :: System :: Archiving :: Backup",
+    "Topic :: Utilities"
+]
+dependencies = [
+    "click == 8.1.7",
+    "Flask == 2.3.3",
+    "Flask-Cors == 4.0.0"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/luismedel/nbagent"
+
+[project.scripts]
+nbagent = "nbagent.main:cli"
