@@ -40,16 +40,18 @@ def message_printer(level_char: str, **kwargs: t.Any) -> t.Callable[[str], None]
 msg_debug = message_printer("d")
 msg_info = message_printer("i", fg="white")
 msg_important = message_printer("!", fg="yellow")
-msg_err = message_printer("i", fg="red", err=True)
+msg_err = message_printer("e", fg="red", err=True)
 
 
-def load_json(path: str) -> t.Dict[str, t.Any]:
+def load_json(path: str, handle_errors: bool = True) -> t.Dict[str, t.Any]:
     try:
         with open(path, "r") as f:
             return json.loads(f.read())
     except Exception as ex:
-        msg_err(f"Error reading from {path}: {ex}")
-        return {}
+        if handle_errors:
+            msg_err(f"Error reading from {path}: {ex}")
+            return {}
+        raise
 
 
 def write_json(path: str, data: t.Dict[str, t.Any]) -> None:
@@ -62,9 +64,12 @@ def write_json(path: str, data: t.Dict[str, t.Any]) -> None:
 
 def load_config() -> t.Dict[str, t.Any]:
     conf_path: str = os.path.join(DATA_HOME, CONFIG_FILE)
-    result = load_json(conf_path)
-    msg_info(f"Config loaded from {conf_path}")
-    return result
+    try:
+        result = load_json(conf_path, handle_errors=False)
+        msg_info(f"Config loaded from {conf_path}")
+        return result
+    except:
+        return {}
 
 
 def write_config() -> None:
