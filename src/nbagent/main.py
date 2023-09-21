@@ -1,4 +1,3 @@
-
 import os
 import json
 import click
@@ -34,7 +33,9 @@ DELETED_BOARDS_HOME: str = ""
 def message_printer(level_char: str, **kwargs: t.Any) -> t.Callable[[str], None]:
     def f(message: str) -> None:
         click.secho(f" * [{level_char}] {message}", **kwargs)
+
     return f
+
 
 msg_debug = message_printer("d")
 msg_info = message_printer("i", fg="white")
@@ -50,6 +51,7 @@ def load_json(path: str) -> t.Dict[str, t.Any]:
         msg_err(f"Error reading from {path}: {ex}")
         return {}
 
+
 def write_json(path: str, data: t.Dict[str, t.Any]) -> None:
     try:
         with open(path, "w") as f:
@@ -57,11 +59,13 @@ def write_json(path: str, data: t.Dict[str, t.Any]) -> None:
     except Exception as ex:
         msg_err(f"Error writing to {path}: {ex}")
 
+
 def load_config() -> t.Dict[str, t.Any]:
     conf_path: str = os.path.join(DATA_HOME, CONFIG_FILE)
     result = load_json(conf_path)
     msg_info(f"Config loaded from {conf_path}")
     return result
+
 
 def write_config() -> None:
     conf_path: str = os.path.join(DATA_HOME, CONFIG_FILE)
@@ -89,7 +93,7 @@ def check_token() -> None:
         abort(401)
 
 
-@app.route('/board/<board_id>', methods=["PUT"])
+@app.route("/board/<board_id>", methods=["PUT"])
 def save_board(board_id):
     try:
         board_path: str = ensure_path(os.path.join(BOARDS_HOME, board_id))
@@ -111,7 +115,7 @@ def save_board(board_id):
         return "false"
 
 
-@app.route('/board/<board_id>', methods=["DELETE"])
+@app.route("/board/<board_id>", methods=["DELETE"])
 def nuke_board(board_id):
     old_path: str = os.path.join(BOARDS_HOME, board_id)
     new_path: str = os.path.join(DELETED_BOARDS_HOME, board_id)
@@ -124,7 +128,7 @@ def nuke_board(board_id):
         return "false"
 
 
-@app.route('/config', methods=["PUT", "OPTIONS"])
+@app.route("/config", methods=["PUT", "OPTIONS"])
 def save_config():
     conf: str | None = request.form.get("conf")
     if conf:
@@ -141,11 +145,11 @@ def init(data: str | None, reset_token: bool, override_token: str | None) -> Non
 
     DATA_HOME = ensure_path(data or DATA_HOME)
     msg_info(f"Using data directory {DATA_HOME}")
-    
+
     BOARDS_HOME = ensure_path(os.path.join(DATA_HOME, BOARDS_SUBDIR))
     DELETED_BOARDS_HOME = ensure_path(os.path.join(DATA_HOME, DELETED_BOARDS_SUBDIR))
     CONFIG = load_config()
-    
+
     save: bool = False
 
     if override_token:
@@ -162,8 +166,7 @@ def init(data: str | None, reset_token: bool, override_token: str | None) -> Non
         write_config()
 
 
-def start_server(addr: str, port: int, data: str | None,
-                 reset_token: bool, override_token: str | None) -> None:
+def start_server(addr: str, port: int, data: str | None, reset_token: bool, override_token: str | None) -> None:
     init(data, reset_token, override_token)
 
     # Show the auto generated token only
@@ -183,39 +186,27 @@ def cli() -> None:
 
 
 @cli.command("start")
-@click.option('--addr', required=False, type=str, default=DFAULT_ADDR, show_default=True,
-              help="Bind to address")
-@click.option('--port', required=False, type=int, default=DEFAULT_PORT, show_default=True,
-              help="Use custom port")
-@click.option('--data', required=False, type=str, default=DATA_HOME, show_default=True,
-              help="Directory for data")
-@click.option('--reset-token', required=False, is_flag=True,
-              help="Generate a new random auth token")
-@click.option('--override-token', required=False, type=str,
-              help="Use a custom auth token")
-def cli_start(addr: str, port: int, data: str | None,
-              reset_token: bool, override_token: str | None) -> None:
-    """Start listening for Nullboard requests.
-    """
-    start_server(addr=addr, port=port, data=data,
-                 reset_token=reset_token,
-                 override_token=override_token)
+@click.option("--addr", required=False, type=str, default=DFAULT_ADDR, show_default=True, help="Bind to address")
+@click.option("--port", required=False, type=int, default=DEFAULT_PORT, show_default=True, help="Use custom port")
+@click.option("--data", required=False, type=str, default=DATA_HOME, show_default=True, help="Directory for data")
+@click.option("--reset-token", required=False, is_flag=True, help="Generate a new random auth token")
+@click.option("--override-token", required=False, type=str, help="Use a custom auth token")
+def cli_start(addr: str, port: int, data: str | None, reset_token: bool, override_token: str | None) -> None:
+    """Start listening for Nullboard requests."""
+    start_server(addr=addr, port=port, data=data, reset_token=reset_token, override_token=override_token)
 
 
 def start_default_server() -> None:
-    """Debugging helper.
-    """
-    start_server(addr=DFAULT_ADDR, port=DEFAULT_PORT, data=None,
-                 reset_token=False,
-                 override_token=None)
+    """Debugging helper."""
+    start_server(addr=DFAULT_ADDR, port=DEFAULT_PORT, data=None, reset_token=False, override_token=None)
 
 
 if __name__ == "__main__":
     try:
         # Let's reduce Flask logging a bit
-        logging.getLogger('werkzeug').setLevel(logging.ERROR)
+        logging.getLogger("werkzeug").setLevel(logging.ERROR)
     except:
         pass
 
     cli()
-    #start_default_server()
+    # start_default_server()
