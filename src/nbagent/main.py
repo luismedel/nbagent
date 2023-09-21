@@ -26,10 +26,8 @@ DEFAULT_PORT: int = 10001
 def msg_info(message: str) -> None:
     click.secho(f" * [i] {message}", fg="white")
 
-
 def msg_important(message: str) -> None:
     click.secho(f" * [!] {message}", fg="yellow")
-
 
 def msg_err(message: str) -> None:
     click.secho(f" * [E] {message}", fg="red", err=True)
@@ -43,7 +41,6 @@ def load_json(path: str) -> t.Dict[str, t.Any]:
         msg_err(f"Error reading from {path}: {ex}")
         return {}
 
-
 def write_json(path: str, data: t.Dict[str, t.Any]) -> None:
     try:
         with open(path, "w") as f:
@@ -51,12 +48,10 @@ def write_json(path: str, data: t.Dict[str, t.Any]) -> None:
     except Exception as ex:
         msg_err(f"Error writing to {path}: {ex}")
 
-
 def write_config() -> None:
     conf_path: str = os.path.join(DATA_HOME, CONFIG_FILE)
     write_json(conf_path, CONFIG)
     msg_info(f"Config saved to {conf_path}")
-
 
 
 def ensure_path(path: str) -> str:
@@ -102,11 +97,11 @@ def save_board(board_id):
         meta_path = os.path.join(board_path, META_FILE)
         write_json(meta_path, meta)
 
-        msg_info(f"Saved board {board_id}, rev {rev}...")
+        msg_info(f"Saved board '{data['title']}' ({board_id}), rev {rev}...")
         return "true"
     except Exception as ex:
         msg_err(f"Error saving board {board_id}: {ex}")
-        raise
+        return "false"
 
 
 @app.route('/board/<board_id>', methods=["DELETE"])
@@ -119,7 +114,7 @@ def nuke_board(board_id):
         return "true"
     except Exception as ex:
         msg_err(f"Error renaming {old_path} to {new_path}: {ex}")
-        raise
+        return "false"
 
 
 @app.route('/config', methods=["PUT", "OPTIONS"])
