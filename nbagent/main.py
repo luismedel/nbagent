@@ -185,33 +185,22 @@ def start_server(addr: str, port: int, data: str | None, reset_token: bool, over
         msg_err(f"Error starting server: {ex}")
 
 
-@click.group()
-def cli() -> None:
-    pass
-
-
-@cli.command("start")
+@click.command()
 @click.option("--addr", required=False, type=str, default=DFAULT_ADDR, show_default=True, help="Bind to address")
 @click.option("--port", required=False, type=int, default=DEFAULT_PORT, show_default=True, help="Use custom port")
 @click.option("--data", required=False, type=str, default=DATA_HOME, show_default=True, help="Directory for data")
 @click.option("--reset-token", required=False, is_flag=True, help="Generate a new random auth token")
 @click.option("--override-token", required=False, type=str, help="Use a custom auth token")
-def cli_start(addr: str, port: int, data: str | None, reset_token: bool, override_token: str | None) -> None:
-    """Start listening for Nullboard requests."""
-    start_server(addr=addr, port=port, data=data, reset_token=reset_token, override_token=override_token)
-
-
-def start_default_server() -> None:
-    """Debugging helper."""
-    start_server(addr=DFAULT_ADDR, port=DEFAULT_PORT, data=None, reset_token=False, override_token=None)
-
-
-if __name__ == "__main__":
+def cli(addr: str, port: int, data: str | None, reset_token: bool, override_token: str | None) -> None:
+    """A Nullboard backup agent"""
     try:
         # Let's reduce Flask logging a bit
         logging.getLogger("werkzeug").setLevel(logging.ERROR)
     except:
         pass
 
+    start_server(addr=addr, port=port, data=data, reset_token=reset_token, override_token=override_token)
+
+
+if __name__ == "__main__":
     cli()
-    # start_default_server()
