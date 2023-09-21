@@ -22,6 +22,14 @@ DELETED_BOARDS_SUBDIR: str = "deleted"
 DFAULT_ADDR: str = "0.0.0.0"
 DEFAULT_PORT: int = 10001
 
+DATA_HOME: str = os.environ.get("XDG_DATA_HOME") or os.path.join(os.environ.get("HOME", "~"), ".local/share")
+DATA_HOME = os.path.join(DATA_HOME, PROG_NAME)
+CONFIG: t.Dict[str, t.Any] = {}
+
+# To be assigned during initialization
+BOARDS_HOME: str = ""
+DELETED_BOARDS_HOME: str = ""
+
 
 def msg_info(message: str) -> None:
     click.secho(f" * [i] {message}", fg="white")
@@ -57,15 +65,6 @@ def write_config() -> None:
 def ensure_path(path: str) -> str:
     os.makedirs(path, exist_ok=True)
     return path
-
-
-DATA_HOME: str = os.environ.get("XDG_DATA_HOME") or os.path.join(os.environ.get("HOME", "~"), ".local/share")
-DATA_HOME = os.path.join(DATA_HOME, PROG_NAME)
-CONFIG: t.Dict[str, t.Any] = {}
-
-# To be assigned during initialization
-BOARDS_HOME: str = ""
-DELETED_BOARDS_HOME: str = ""
 
 
 app = Flask(__name__)
