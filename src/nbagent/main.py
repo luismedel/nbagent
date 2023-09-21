@@ -182,7 +182,6 @@ def start_server(addr: str, port: int, data: str | None, override_token: str | N
 
 @click.group()
 def cli() -> None:
-    print(1)
     pass
 
 @cli.command("start")
