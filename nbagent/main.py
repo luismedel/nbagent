@@ -174,9 +174,7 @@ def init(data: str | None, reset_token: bool, override_token: str | None) -> Non
 def start_server(addr: str, port: int, data: str | None, reset_token: bool, override_token: str | None) -> None:
     init(data, reset_token, override_token)
 
-    # Show the auto generated token only
-    if not override_token:
-        msg_important(f"Nullboard token: {CONFIG['auth']}")
+    msg_important(f"Nullboard token: {CONFIG['auth']}")
 
     msg_info(f"Server listening {addr}:{port}...")
     try:
