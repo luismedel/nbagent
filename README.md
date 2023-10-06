@@ -4,6 +4,8 @@
 
 It works in the same way that the official [Nullboard Backup Agent](https://github.com/apankrat/nullboard-agent) for Windows.
 
+> Note: I also created [https://github.com/luismedel/docker-nullboard](https://github.com/luismedel/docker-nullboard) in case you want to have a full self-contained Nullboard installation (Nullboard app + nbagent)
+
 ## Installation
 
 ```sh
@@ -33,7 +35,7 @@ Note the line:
  * [!] Nullboard token: d6606ecaaae54612906cc56a75583b61
 ```
 
-Just copy the auth token (in this example `d6606ecaaae54612906cc56a75583b61`) into Nullboard, [as per the instructions](https://nullboard.io/backups) and you're ready to go.
+Just copy the auth token (in this example `d6606ecaaae54612906cc56a75583b61`) into Nullboard, [as per the instructions](https://nullboard.io/backups) and you're **ready to go**.
 
 If for any reason you need to reset the auth token use:
 
