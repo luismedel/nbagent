@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nbagent"
-version = "1.0.1"
+version = "1.1.0"
 authors = [
   { name="Luis Medel", email="luis@luismedel.com" },
 ]
 description = "A Nullboard backup agent for Unix systems"
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 classifiers = [
-    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
     "License :: OSI Approved :: MIT License",
     "Operating System :: Unix",
     "Topic :: System :: Archiving :: Backup",
