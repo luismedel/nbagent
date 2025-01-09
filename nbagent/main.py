@@ -21,7 +21,9 @@ DELETED_BOARDS_SUBDIR: str = "deleted"
 DFAULT_ADDR: str = "0.0.0.0"
 DEFAULT_PORT: int = 10001
 
-DATA_HOME: str = os.environ.get("XDG_DATA_HOME") or os.path.join(os.environ.get("HOME", "~"), ".local/share")
+DATA_HOME: str = os.environ.get("XDG_DATA_HOME") or os.path.join(
+    os.environ.get("HOME", "~"), ".local/share"
+)
 DATA_HOME = os.path.join(DATA_HOME, PROG_NAME)
 CONFIG: t.Dict[str, t.Any] = {}
 
@@ -99,7 +101,7 @@ def check_token() -> None:
 
 
 @app.route("/board/<board_id>", methods=["PUT"])
-def save_board(board_id):
+def save_board(board_id: str) -> str:
     try:
         board_path: str = ensure_path(os.path.join(BOARDS_HOME, board_id))
 
@@ -121,7 +123,7 @@ def save_board(board_id):
 
 
 @app.route("/board/<board_id>", methods=["DELETE"])
-def nuke_board(board_id):
+def nuke_board(board_id: str) -> str:
     old_path: str = os.path.join(BOARDS_HOME, board_id)
     new_path: str = os.path.join(DELETED_BOARDS_HOME, board_id)
 
@@ -134,15 +136,17 @@ def nuke_board(board_id):
 
 
 @app.route("/config", methods=["PUT", "OPTIONS"])
-def save_config():
-    conf: str | None = request.form.get("conf")
+def save_config() -> str:
+    conf: t.Optional[str] = request.form.get("conf")
     if conf:
         CONFIG["conf"] = conf
         write_config()
     return "true"
 
 
-def init(data: str | None, reset_token: bool, override_token: str | None) -> None:
+def init(
+    data: t.Optional[str], reset_token: bool, override_token: t.Optional[str]
+) -> None:
     global DATA_HOME
     global CONFIG
     global BOARDS_HOME
@@ -171,7 +175,13 @@ def init(data: str | None, reset_token: bool, override_token: str | None) -> Non
         write_config()
 
 
-def start_server(addr: str, port: int, data: str | None, reset_token: bool, override_token: str | None) -> None:
+def start_server(
+    addr: str,
+    port: int,
+    data: t.Optional[str],
+    reset_token: bool,
+    override_token: t.Optional[str],
+) -> None:
     init(data, reset_token, override_token)
 
     msg_important(f"Nullboard token: {CONFIG['auth']}")
@@ -184,12 +194,46 @@ def start_server(addr: str, port: int, data: str | None, reset_token: bool, over
 
 
 @click.command()
-@click.option("--addr", required=False, type=str, default=DFAULT_ADDR, show_default=True, help="Bind to address")
-@click.option("--port", required=False, type=int, default=DEFAULT_PORT, show_default=True, help="Use custom port")
-@click.option("--data", required=False, type=str, default=DATA_HOME, show_default=True, help="Directory for data")
-@click.option("--reset-token", required=False, is_flag=True, help="Generate a new random auth token")
-@click.option("--override-token", required=False, type=str, help="Use a custom auth token")
-def cli(addr: str, port: int, data: str | None, reset_token: bool, override_token: str | None) -> None:
+@click.option(
+    "--addr",
+    required=False,
+    type=str,
+    default=DFAULT_ADDR,
+    show_default=True,
+    help="Bind to address",
+)
+@click.option(
+    "--port",
+    required=False,
+    type=int,
+    default=DEFAULT_PORT,
+    show_default=True,
+    help="Use custom port",
+)
+@click.option(
+    "--data",
+    required=False,
+    type=str,
+    default=DATA_HOME,
+    show_default=True,
+    help="Directory for data",
+)
+@click.option(
+    "--reset-token",
+    required=False,
+    is_flag=True,
+    help="Generate a new random auth token",
+)
+@click.option(
+    "--override-token", required=False, type=str, help="Use a custom auth token"
+)
+def cli(
+    addr: str,
+    port: int,
+    data: t.Optional[str],
+    reset_token: bool,
+    override_token: t.Optional[str],
+) -> None:
     """A Nullboard backup agent"""
     try:
         # Let's reduce Flask logging a bit
@@ -197,7 +241,13 @@ def cli(addr: str, port: int, data: str | None, reset_token: bool, override_toke
     except:
         pass
 
-    start_server(addr=addr, port=port, data=data, reset_token=reset_token, override_token=override_token)
+    start_server(
+        addr=addr,
+        port=port,
+        data=data,
+        reset_token=reset_token,
+        override_token=override_token,
+    )
 
 
 if __name__ == "__main__":
